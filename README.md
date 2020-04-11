@@ -1,5 +1,8 @@
 # toy-application
-team members:
+Toy Application which guarantees reliable data transfer over UDP sockets
+
+Team members:
+
 1.B.N.ROHAN KUMAR
 2. NARKEDAMILLY BASWATH
 3. G.SAI DHEERAJ REDDY
