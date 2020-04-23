@@ -1,6 +1,6 @@
 from mySocket import mySocket
 import socket
-UDP_IP = "127.0.0.1"
+UDP_IP = socket.gethostname()
 UDP_PORT = 5001
 # print(pickle.dumps(pkt))
 udpsocket=mySocket(socket.AF_INET,socket.SOCK_DGRAM)
