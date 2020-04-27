@@ -40,8 +40,9 @@ class mySocket(socket.socket): #extends UDP socket
       while True:
         pkt,addr=self.recvfrom(4096)
         data=pickle.loads(pkt)
-        if data.isack :
+        if data.isack and data.ack_no==self.state:
           print('ack recieved!!')
+          self.state=abs(1-self.state)
           s=1
           break
         tout = time.perf_counter()
@@ -85,12 +86,15 @@ class mySocket(socket.socket): #extends UDP socket
     data,addr=self.recvfrom(arg1)
     # print((data))
     pkt=pickle.loads(data)
-    received = pkt.payload
-    print('message recieved: ')
+    
+    if pkt.seq_no==self.state:
+      received = pkt.payload
+      print('message recieved: ')
     # pprint.pprint(received)
-    ack_pkt=Packet([pkt.seq_no,True])
-    print('addr: ',addr)
-    self.sendto(pickle.dumps(ack_pkt),addr)
-    return received
+      self.state=abs(1-self.state)
+      ack_pkt=Packet([pkt.seq_no,True])
+      print('addr: ',addr)
+      self.sendto(pickle.dumps(ack_pkt),addr)
+      return received
     #code to check if the recieved data has no errors
 
