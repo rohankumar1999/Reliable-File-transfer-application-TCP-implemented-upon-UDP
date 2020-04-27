@@ -29,12 +29,27 @@ class mySocket(socket.socket): #extends UDP socket
   def run_send(self,arg1,arg2):
     # print('in run send')
     while True:
+      s=0
       print('sending..')
+      start = time.perf_counter()
       self.sendto(arg1,arg2)
-      time.sleep(5)
-      if self.t2.is_alive() is False:
-        print('message sent')
-        break
+      # time.sleep(5)
+      # if self.t2.is_alive() is False:
+      #   print('message sent')
+      #   break
+      while True:
+        pkt,addr=self.recvfrom(4096)
+        data=pickle.loads(pkt)
+        if data.isack :
+          print('ack recieved!!')
+          s=1
+          break
+        tout = time.perf_counter()
+        if((tout-start) > 5 ):
+          s=1
+          break
+      if(s==1):
+        break    
       # data,addr=self.recvfrom(4096)
       # pkt=pickle.loads(data)
       # print(pkt.isack)
@@ -43,33 +58,39 @@ class mySocket(socket.socket): #extends UDP socket
       #   break
         
       
-  def terminate_send(self):
+  # def terminate_send(self):
     
-    while True:
-      pkt,addr=self.recvfrom(4096)
-      data=pickle.loads(pkt)
-      if data.isack :
-        print('ack recieved!!')
-        break
+  #   while True:
+  #     pkt,addr=self.recvfrom(4096)
+  #     data=pickle.loads(pkt)
+  #     if data.isack :
+  #       print('ack recieved!!')
+  #       break
 
     
   def send_to(self,arg1,arg2):
     pkt=Packet([arg1,self.state,False])
-    self.t1 = threading.Thread(target=self.run_send, args=(pickle.dumps(pkt),arg2)) 
+    send_data = pickle.dumps(pkt)
+    # print(send_data)
+    self.t1 = threading.Thread(target=self.run_send, args=(send_data,arg2)) 
       # self.sendto(pickle.dumps(pkt),arg2)
-    self.t2=threading.Thread(target=self.terminate_send,args=())
+    # self.t2=threading.Thread(target=self.terminate_send,args=())
     self.t1.start()
-    self.t2.start()
+    # self.t2.start()
     self.t1.join()
      #code for recieving ack.if no ack resend
      
   def recv_from(self,arg1):
+    print(arg1)
     data,addr=self.recvfrom(arg1)
+    # print((data))
     pkt=pickle.loads(data)
+    received = pkt.payload
     print('message recieved: ')
-    pprint.pprint(pkt.payload)
+    # pprint.pprint(received)
     ack_pkt=Packet([pkt.seq_no,True])
     print('addr: ',addr)
     self.sendto(pickle.dumps(ack_pkt),addr)
+    return received
     #code to check if the recieved data has no errors
 
