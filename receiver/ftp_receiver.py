@@ -38,6 +38,7 @@ with open(filename, "wb") as f:
     for _ in progress:
         # read 1024 bytes from the socket (receive)
         bytes_read = udpsocket.recv_from(BUFFER_SIZE)
+        print('in')
         if not bytes_read:    
             # nothing is received
             # file transmitting is done

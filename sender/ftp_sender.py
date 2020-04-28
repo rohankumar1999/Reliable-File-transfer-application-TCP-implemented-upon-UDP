@@ -28,7 +28,6 @@ def send_file(filename, host, port):
             # we use sendall to assure transimission in 
             # busy networks
             udpsocket.send_to(bytes_read,(host,port))
-            print('sentagain')
             # update the progress bar
             progress.update(len(bytes_read))
 
