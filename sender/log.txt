@@ -1,0 +1,32 @@
+sending..
+0
+ack recieved!!
+message sent
+sending..
+1
+ack recieved!!
+message sent
+sending..
+0
+ack recieved!!
+message sent
+sending..
+1
+ack recieved!!
+message sent
+sending..
+0
+ack recieved!!
+message sent
+sending..
+1
+ack recieved!!
+message sent
+sending..
+0
+ack recieved!!
+message sent
+sending..
+1
+ack recieved!!
+message sent

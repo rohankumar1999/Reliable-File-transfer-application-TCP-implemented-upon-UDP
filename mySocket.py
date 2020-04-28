@@ -32,16 +32,19 @@ class mySocket(socket.socket): #extends UDP socket
     # print('in run send')
     while True:
       s=0
-      # print('sending..')
+      print('sending..')
+      sendpacket = pickle.loads(arg1)
+      print(sendpacket.seq_no)
       start = time.perf_counter()
       self.sendto(arg1,arg2)
       while True:
         if self.t2.is_alive() is False:
-          # print('message sent')
+          print('message sent')
           s=1
           break
         tout = time.perf_counter()
-        if((tout-start) > 10 ):
+        if((tout-start) > 2 ):
+          print('time count')
           s=0
           break
       if(s==1):
@@ -60,7 +63,7 @@ class mySocket(socket.socket): #extends UDP socket
       pkt,addr=self.recvfrom(4096)
       data=pickle.loads(pkt)
       if data.isack and data.ack_no==self.state:
-        # print('ack recieved!!')
+        print('ack recieved!!')
         break
   #   while True:
   #     pkt,addr=self.recvfrom(4096)
@@ -85,7 +88,7 @@ class mySocket(socket.socket): #extends UDP socket
     self.t1.join()
      
   def recv_from(self,arg1):
-    # print(arg1)
+    print(arg1)
     while True:
       s=0
       data,addr=self.recvfrom(arg1)
@@ -95,17 +98,20 @@ class mySocket(socket.socket): #extends UDP socket
       m=hashlib.md5()
       m.update(received)
       checksum = m.hexdigest()
-      # print(self.state,(pkt.seq_no),checksum==pkt.checksum )
-      if (pkt.seq_no==self.state and checksum==pkt.checksum):
-        # print('message recieved: ')
-      # pprint.pprint(received)
-        self.state=abs(1-self.state)
+      print(self.state,(pkt.seq_no),checksum==pkt.checksum )
+      if(checksum == pkt.checksum):
         ack_pkt=Packet([pkt.seq_no,True])
-        print('addr: ',addr)
         self.sendto(pickle.dumps(ack_pkt),addr)
-        s=1
+        if (pkt.seq_no==self.state):
+          print('message recieved: ')
+          # pprint.pprint(received)
+          self.state=abs(1-self.state)
+          # ack_pkt=Packet([pkt.seq_no,True])                  
+          print('addr: ',addr)
+          s=1
       if(s==1):
         break
+      print('packet drop')
     return received  
     #code to check if the recieved data has no errors
 

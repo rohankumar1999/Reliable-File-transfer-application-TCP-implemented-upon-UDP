@@ -1,0 +1,35 @@
+[*] Listening as 127.0.0.1:5001
+4096
+0 0 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+b'sample.txt<SEPARATOR>25854'
+4096
+1 1 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
+0 0 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
+1 1 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
+0 0 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
+1 1 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
+0 0 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
+1 1 True
+message recieved: 
+addr:  ('127.0.0.1', 51432)
+4096
