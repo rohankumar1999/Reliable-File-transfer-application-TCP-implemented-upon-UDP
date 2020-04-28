@@ -14,8 +14,10 @@ def send_file(filename, host, port):
     # create the client socket
     udpsocket=mySocket(socket.AF_INET, socket.SOCK_DGRAM)
     # send the filename and filesize
-    udpsocket.send_to(f"{filename}{SEPARATOR}{filesize}",(host,port))
-    print('sent')
+    fname = f"{filename}{SEPARATOR}{filesize}"
+    encoded_filename = fname.encode()
+    udpsocket.send_to(encoded_filename,(host,port))
+    
     # start sending the file
     progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     with open(filename, "rb") as f:
@@ -28,6 +30,7 @@ def send_file(filename, host, port):
             # we use sendall to assure transimission in 
             # busy networks
             udpsocket.send_to(bytes_read,(host,port))
+            # print('sent')
             # update the progress bar
             progress.update(len(bytes_read))
 

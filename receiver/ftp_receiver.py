@@ -26,6 +26,7 @@ print(f"[*] Listening as {IP}:{PORT}")
 # receive the file infos
 # receive using client socket, not server socket
 received = udpsocket.recv_from(BUFFER_SIZE)
+received = received.decode()
 filename, filesize = received.split(SEPARATOR)
 # remove absolute path if there is
 filename = os.path.basename(filename)
@@ -38,7 +39,7 @@ with open(filename, "wb") as f:
     for _ in progress:
         # read 1024 bytes from the socket (receive)
         bytes_read = udpsocket.recv_from(BUFFER_SIZE)
-        print('in')
+        # print('in')
         if not bytes_read:    
             # nothing is received
             # file transmitting is done

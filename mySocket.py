@@ -41,10 +41,11 @@ class mySocket(socket.socket): #extends UDP socket
           s=1
           break
         tout = time.perf_counter()
-        if((tout-start) > 5 ):
+        if((tout-start) > 10 ):
           s=0
           break
       if(s==1):
+        self.state=abs(1-self.state)
         break    
       # data,addr=self.recvfrom(4096)
       # pkt=pickle.loads(data)
@@ -60,7 +61,6 @@ class mySocket(socket.socket): #extends UDP socket
       data=pickle.loads(pkt)
       if data.isack and data.ack_no==self.state:
         # print('ack recieved!!')
-        self.state=abs(1-self.state)
         break
   #   while True:
   #     pkt,addr=self.recvfrom(4096)
@@ -80,8 +80,8 @@ class mySocket(socket.socket): #extends UDP socket
     self.t1 = threading.Thread(target=self.run_send, args=(send_data,arg2)) 
       # self.sendto(pickle.dumps(pkt),arg2)
     self.t2=threading.Thread(target=self.terminate_send,args=())
-    self.t1.start()
     self.t2.start()
+    self.t1.start()
     self.t1.join()
      
   def recv_from(self,arg1):
@@ -95,7 +95,8 @@ class mySocket(socket.socket): #extends UDP socket
       m=hashlib.md5()
       m.update(received)
       checksum = m.hexdigest()
-      if pkt.seq_no==self.state & checksum==pkt.checksum:
+      # print(self.state,(pkt.seq_no),checksum==pkt.checksum )
+      if (pkt.seq_no==self.state and checksum==pkt.checksum):
         # print('message recieved: ')
       # pprint.pprint(received)
         self.state=abs(1-self.state)
