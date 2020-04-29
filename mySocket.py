@@ -52,6 +52,7 @@ class mySocket(socket.socket): #extends UDP socket
         tout = time.perf_counter()
         if((tout-start) > 2 ):
           self.write_log('Ack drop')
+          # print('in')
           s=0
           break
       if(s==1):
