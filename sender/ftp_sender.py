@@ -17,7 +17,6 @@ def send_file(filename, host, port):
     fname = f"{filename}{SEPARATOR}{filesize}"
     encoded_filename = fname.encode()
     udpsocket.send_to(encoded_filename,(host,port))
-    
     # start sending the file
     progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     with open(filename, "rb") as f:
@@ -25,15 +24,15 @@ def send_file(filename, host, port):
             # read the bytes from the file
             bytes_read = f.read(BUFFER_SIZE-400)
             if not bytes_read:
+                progress.close()        
                 # file transmitting is done
                 break
-            # we use sendall to assure transimission in 
-            # busy networks
             udpsocket.send_to(bytes_read,(host,port))
-            # print('sent')
             # update the progress bar
             progress.update(len(bytes_read))
-
+            progress.refresh(nolock=False, lock_args=None)
+    # Sending file transmission done signal
+    udpsocket.send_to('bye'.encode(),(host,port))
     # close the socket
     udpsocket.close()
 

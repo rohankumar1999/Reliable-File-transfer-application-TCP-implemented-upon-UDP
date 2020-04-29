@@ -12,16 +12,10 @@ PORT = 5001
 BUFFER_SIZE = 1024 * 4
 SEPARATOR = "<SEPARATOR>"
 # create the server socket
-# TCP socket
 udpsocket=mySocket(socket.AF_INET, socket.SOCK_DGRAM)
 # bind the socket to our local address
 udpsocket.custom_create(IP,PORT)
-# enabling our server to accept connections
-# 5 here is the number of unaccepted connections that
-# the system will allow before refusing new connections
 print(f"[*] Listening as {IP}:{PORT}")
-# accept connection if there is any
-# if below code is executed, that means the sender is connected
 
 # receive the file infos
 # receive using client socket, not server socket
@@ -38,16 +32,16 @@ filesize = int(filesize)
 progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
 with open(filename, "wb") as f:
     for _ in progress:
-        # read 1024 bytes from the socket (receive)
+        # read 1024*4 bytes from the socket (receive)
         bytes_read = udpsocket.recv_from(BUFFER_SIZE)
         # print('in')
-        if not bytes_read:    
-            # nothing is received
+        if bytes_read == 'bye'.encode():    
             # file transmitting is done
+            progress.close()
             break
         # write to the file the bytes we just received
         f.write(bytes_read)
         # update the progress bar
         progress.update(len(bytes_read))
-
+        progress.refresh(nolock=False, lock_args=None)
 udpsocket.close()
