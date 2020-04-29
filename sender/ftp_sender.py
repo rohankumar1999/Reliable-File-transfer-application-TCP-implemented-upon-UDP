@@ -3,7 +3,7 @@ sys.path.append('../')
 from mySocket import mySocket
 import tqdm
 import os
-import argparse, time
+import argparse
 import socket
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 1024 * 4 #4KB
@@ -19,7 +19,6 @@ def send_file(filename, host, port):
     udpsocket.send_to(encoded_filename,(host,port))
     # start sending the file
     progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
-    t1 = time.time()
     with open(filename, "rb") as f:
         for _ in progress:
             # read the bytes from the file
@@ -33,9 +32,6 @@ def send_file(filename, host, port):
             progress.update(len(bytes_read))
             progress.refresh(nolock=False, lock_args=None)
     # Sending file transmission done signal
-    t2 = time.time()
-    print(t2-t1)
-    print (filesize/(t2-t1)/1024)
     udpsocket.send_to('bye'.encode(),(host,port))
     # close the socket
     udpsocket.close()

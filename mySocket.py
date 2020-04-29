@@ -13,9 +13,10 @@ class Packet:
       self.isack=args[2]
       self.seq_no=args[1]
       self.checksum=args[3]
-    elif len(args)==2:
+    elif len(args)==3:
       self.isack=args[1]
       self.ack_no=args[0]
+      self.checksum=args[2]
     
   
 class mySocket(socket.socket): #extends UDP socket
@@ -70,7 +71,11 @@ class mySocket(socket.socket): #extends UDP socket
     while True:  
       pkt,addr=self.recvfrom(4096)
       data=pickle.loads(pkt)
-      if data.isack and data.ack_no==self.state:
+      received = str(data.ack_no) + str(data.isack)
+      m=hashlib.md5()
+      m.update(received.encode())
+      checksum = m.hexdigest()
+      if data.isack and data.ack_no==self.state and checksum==data.checksum:
         # print('ack recieved!!')
         break
   #   while True:
@@ -117,7 +122,12 @@ class mySocket(socket.socket): #extends UDP socket
       # print(checksum, pkt.checksum)
       # print(self.state,(pkt.seq_no),checksum==pkt.checksum )
       if(checksum == pkt.checksum):
-        ack_pkt=Packet([pkt.seq_no,True])
+        ack_pkt=Packet([pkt.seq_no,True,0])
+        check_str = str(ack_pkt.ack_no) + str(ack_pkt.isack)
+        m=hashlib.md5()
+        m.update(check_str.encode())
+        ack_checksum = m.hexdigest()
+        ack_pkt.checksum = ack_checksum
         self.sendto(pickle.dumps(ack_pkt),addr)
         if (pkt.seq_no==self.state):
           # print('message recieved: ')
