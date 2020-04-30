@@ -41,9 +41,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simple File Sender")
     parser.add_argument("file", help="File name to send")
     parser.add_argument("host", help="The host/IP address of the receiver")
-    parser.add_argument("-p", "--port", help="Port to use, default is 5001", default=5001)
+    parser.add_argument("port", help="Port to use")
     args = parser.parse_args()
     filename = args.file
     host = args.host
-    port = args.port
+    port = int(args.port)
     send_file(filename, host, port)
