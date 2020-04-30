@@ -8,7 +8,7 @@ from mySocket import mySocket
 # device's IP address
 def receive_file(host,port):
     IP = host
-    PORT = int(port)
+    PORT = port
     # receive 4096 bytes each time
     BUFFER_SIZE = 1024 * 4
     SEPARATOR = "<SEPARATOR>"
@@ -53,5 +53,5 @@ if __name__ == "__main__":
     parser.add_argument("port", help="Port to use")
     args = parser.parse_args()
     host = args.host
-    port = args.port
+    port = int(args.port)
     receive_file(host, port)    
